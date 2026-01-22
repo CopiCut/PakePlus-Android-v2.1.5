@@ -1,11 +1,812 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>PakePlus</title>
-    </head>
-    <body>
-        PakePlus
-    </body>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>拉了吗 A - 你的专属拉屎记录仪</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #8B4513;
+            --secondary: #D2691E;
+            --accent: #FFD700;
+            --bg: #FDF5E6;
+            --card-bg: #FFF8DC;
+            --text: #5C4033;
+            --light-text: #8B4513;
+        }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23d2691e' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(139, 69, 19, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "💩";
+            position: absolute;
+            font-size: 120px;
+            opacity: 0.1;
+            top: -20px;
+            right: -20px;
+            transform: rotate(30deg);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-style: italic;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.1);
+            border: 2px dashed var(--secondary);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .card-title i {
+            font-size: 1.5rem;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0c9a6;
+            border-radius: 10px;
+            background-color: white;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(210, 105, 30, 0.2);
+        }
+        
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+        
+        .option-card {
+            background: white;
+            border: 2px solid #e0c9a6;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+        
+        .option-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--secondary);
+            box-shadow: 0 5px 10px rgba(139, 69, 19, 0.1);
+        }
+        
+        .option-card.selected {
+            background-color: var(--secondary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .option-card .emoji {
+            font-size: 1.8rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: white;
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(139, 69, 19, 0.4);
+        }
+        
+        .btn-secondary {
+            background-color: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #f8f0e0;
+        }
+        
+        .small-text {
+            font-size: 0.85rem;
+            color: var(--light-text);
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        .history-section {
+            display: none;
+        }
+        
+        .history-item {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 5px solid var(--secondary);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .history-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .history-detail {
+            background: #f9f9f9;
+            padding: 8px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--light-text);
+            font-style: italic;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+        
+        .ai-summary {
+            background: linear-gradient(135deg, #f5f5f5, #e6e6e6);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px dashed var(--light-text);
+            display: none;
+        }
+        
+        .ai-summary h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .ai-summary p {
+            margin-bottom: 10px;
+            line-height: 1.7;
+        }
+        
+        .ai-summary .recommendation {
+            font-weight: bold;
+            color: var(--primary);
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        .disclaimer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            font-size: 0.85rem;
+            color: #777;
+            border: 1px dashed #ccc;
+        }
+        
+        .navigation {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .nav-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .nav-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .nav-btn:not(.active) {
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: translateX(150%);
+            transition: transform 0.4s ease;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .card {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💩 拉了吗 A</h1>
+            <div class="subtitle">人可以emo，但屎不能憋</div>
+        </header>
+        
+        <div class="navigation">
+            <div class="nav-btn active" id="homeNav">首页记录</div>
+            <div class="nav-btn" id="historyNav">历史回忆</div>
+        </div>
+        
+        <!-- 首页表单 -->
+        <div class="home-section">
+            <!-- 灵魂拷问 -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-question-circle"></i>
+                    <span>今天，你拉了吗？</span>
+                </div>
+                <div class="options-container" id="statusOptions">
+                    <div class="option-card" data-value="拉过了">
+                        <span class="emoji">💩</span>
+                        拉过了
+                    </div>
+                    <div class="option-card" data-value="还在酝酿">
+                        <span class="emoji">⏳</span>
+                        还在酝酿
+                    </div>
+                    <div class="option-card" data-value="忘了">
+                        <span class="emoji">🤡</span>
+                        忘了
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 拉屎时间 -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-clock"></i>
+                    <span>拉屎启动时间</span>
+                </div>
+                <div class="input-group">
+                    <input type="time" id="startTime" placeholder="比如：07:58（刚醒就拉，属于天赋型选手）">
+                    <div class="small-text">比如：07:58（刚醒就拉，属于天赋型选手）</div>
+                </div>
+            </div>
+            
+            <!-- 拉屎时长 -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-hourglass-half"></i>
+                    <span>本次拉屎消耗时长（分钟）</span>
+                </div>
+                <div class="input-group">
+                    <input type="number" id="duration" min="1" max="120" placeholder="比如：3（效率派） / 15（沉浸式）">
+                    <div class="small-text">温馨提示：超过 20 分钟将自动进入“腿麻模式”</div>
+                </div>
+            </div>
+            
+            <!-- 拉屎形状 -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-toilet"></i>
+                    <span>今日屎况汇报</span>
+                </div>
+                <div class="options-container" id="shapeOptions">
+                    <div class="option-card" data-value="顺滑成型，人生巅峰">
+                        <span class="emoji">🟤</span>
+                        顺滑成型
+                    </div>
+                    <div class="option-card" data-value="偏硬，有点较劲">
+                        <span class="emoji">🧱</span>
+                        偏硬较劲
+                    </div>
+                    <div class="option-card" data-value="稀里哗啦，来不及告别">
+                        <span class="emoji">💦</span>
+                        稀里哗啦
+                    </div>
+                    <div class="option-card" data-value="爆发输出，毫无保留">
+                        <span class="emoji">💥</span>
+                        爆发输出
+                    </div>
+                    <div class="option-card" data-value="不想回忆">
+                        <span class="emoji">🫥</span>
+                        不想回忆
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 拉屎眼神 -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-eye"></i>
+                    <span>拉屎当下的眼神状态</span>
+                </div>
+                <div class="options-container" id="eyeOptions">
+                    <div class="option-card" data-value="放空，脑子关机">
+                        <span class="emoji">😌</span>
+                        放空关机
+                    </div>
+                    <div class="option-card" data-value="冷静思考人生意义">
+                        <span class="emoji">😐</span>
+                        哲学思考
+                    </div>
+                    <div class="option-card" data-value="用力但不说">
+                        <span class="emoji">😵</span>
+                        用力不说
+                    </div>
+                    <div class="option-card" data-value="灵魂短暂离体">
+                        <span class="emoji">🫠</span>
+                        灵魂出窍
+                    </div>
+                    <div class="option-card" data-value="眼神警惕（怕被敲门）">
+                        <span class="emoji">👁️</span>
+                        警惕敲门
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 额外碎碎念 -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-comment-dots"></i>
+                    <span>本次拉屎补充说明</span>
+                </div>
+                <div class="input-group">
+                    <textarea id="notes" rows="3" placeholder="比如：昨天烧烤吃多了 / 咖啡不讲武德 / 这把是被早餐背刺了"></textarea>
+                </div>
+            </div>
+            
+            <!-- 提交按钮 -->
+            <button class="btn btn-primary" id="submitBtn">
+                <i class="fas fa-save"></i> 就是这一拉，给我存上
+            </button>
+            
+            <!-- AI总结（初始隐藏） -->
+            <div class="ai-summary" id="aiSummary">
+                <h3><i class="fas fa-robot"></i> AI 沙雕总结</h3>
+                <p id="aiSummaryContent">AI 正在分析你近期的屎况走势……</p>
+            </div>
+        </div>
+        
+        <!-- 历史记录页 -->
+        <div class="history-section">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-history"></i>
+                    <span>你的屎生回忆录</span>
+                </div>
+                <div id="historyList">
+                    <!-- 历史记录将在这里动态生成 -->
+                </div>
+                <div class="empty-state" id="emptyState">
+                    <i class="fas fa-toilet"></i>
+                    <p>这里还很干净<br>等你第一次拉完再来污染它吧</p>
+                </div>
+            </div>
+            
+            <button class="btn btn-secondary" id="clearHistoryBtn">
+                <i class="fas fa-trash-alt"></i> 清空所有回忆
+            </button>
+        </div>
+        
+        <!-- 免责声明 -->
+        <div class="disclaimer">
+            <p>本产品不对便秘、拉稀、爆拉负责<br>但会陪你记录每一次努力</p>
+        </div>
+    </div>
+    
+    <!-- 通知 -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i> <span id="notificationText">记录成功！</span>
+    </div>
+
+    <script>
+        // 数据存储
+        let records = JSON.parse(localStorage.getItem('laleRecords')) || [];
+        
+        // DOM元素
+        const homeSection = document.querySelector('.home-section');
+        const historySection = document.querySelector('.history-section');
+        const homeNav = document.getElementById('homeNav');
+        const historyNav = document.getElementById('historyNav');
+        const submitBtn = document.getElementById('submitBtn');
+        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+        const historyList = document.getElementById('historyList');
+        const emptyState = document.getElementById('emptyState');
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notificationText');
+        const aiSummary = document.getElementById('aiSummary');
+        const aiSummaryContent = document.getElementById('aiSummaryContent');
+        
+        // 表单字段
+        const startTime = document.getElementById('startTime');
+        const duration = document.getElementById('duration');
+        const notes = document.getElementById('notes');
+        
+        // 选项组
+        const statusOptions = document.getElementById('statusOptions');
+        const shapeOptions = document.getElementById('shapeOptions');
+        const eyeOptions = document.getElementById('eyeOptions');
+        
+        // 当前选中的值
+        let currentStatus = '';
+        let currentShape = '';
+        let currentEye = '';
+        
+        // 初始化
+        function init() {
+            // 设置默认时间为当前时间
+            const now = new Date();
+            startTime.value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            
+            // 为选项添加点击事件
+            addOptionListeners(statusOptions, (value) => currentStatus = value);
+            addOptionListeners(shapeOptions, (value) => currentShape = value);
+            addOptionListeners(eyeOptions, (value) => currentEye = value);
+            
+            // 导航切换
+            homeNav.addEventListener('click', () => showSection('home'));
+            historyNav.addEventListener('click', () => showSection('history'));
+            
+            // 提交按钮
+            submitBtn.addEventListener('click', handleSubmit);
+            
+            // 清空历史按钮
+            clearHistoryBtn.addEventListener('click', clearHistory);
+            
+            // 初始渲染历史记录
+            renderHistory();
+        }
+        
+        // 添加选项点击事件
+        function addOptionListeners(container, callback) {
+            const options = container.querySelectorAll('.option-card');
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    // 移除其他选项的选中状态
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    // 添加当前选项的选中状态
+                    option.classList.add('selected');
+                    // 回调选中的值
+                    callback(option.dataset.value);
+                });
+            });
+        }
+        
+        // 切换显示区域
+        function showSection(section) {
+            if (section === 'home') {
+                homeSection.style.display = 'block';
+                historySection.style.display = 'none';
+                homeNav.classList.add('active');
+                historyNav.classList.remove('active');
+            } else {
+                homeSection.style.display = 'none';
+                historySection.style.display = 'block';
+                homeNav.classList.remove('active');
+                historyNav.classList.add('active');
+                renderHistory();
+            }
+        }
+        
+        // 显示通知
+        function showNotification(message) {
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // 生成AI总结
+        function generateAISummary() {
+            if (records.length === 0) return;
+            
+            const lastRecords = records.slice(-3);
+            const shapes = lastRecords.map(r => r.shape);
+            const durations = lastRecords.map(r => parseInt(r.duration));
+            const eyes = lastRecords.map(r => r.eye);
+            
+            // 分析频率
+            const days = ['日', '一', '二', '三', '四', '五', '六'];
+            const today = new Date().getDay();
+            const dayName = days[today];
+            
+            // 分析形状
+            const shapeCount = {};
+            shapes.forEach(shape => {
+                shapeCount[shape] = (shapeCount[shape] || 0) + 1;
+            });
+            const commonShape = Object.keys(shapeCount).sort((a, b) => shapeCount[b] - shapeCount[a])[0];
+            
+            // 分析时长
+            const avgDuration = Math.round(durations.reduce((a, b) => a + b, 0) / durations.length);
+            
+            // 分析眼神
+            const eyeCount = {};
+            eyes.forEach(eye => {
+                eyeCount[eye] = (eyeCount[eye] || 0) + 1;
+            });
+            const commonEye = Object.keys(eyeCount).sort((a, b) => eyeCount[b] - eyeCount[a])[0];
+            
+            // 生成总结
+            let summary = `<p>最近${lastRecords.length}次拉屎记录分析：</p>`;
+            summary += `<p>📅 频率：${lastRecords.length > 2 ? '稳定' : lastRecords.length > 1 ? '尚可' : '稀少'}（星期${dayName}特别活跃）</p>`;
+            summary += `<p>📊 形状：${commonShape || '暂无数据'}</p>`;
+            summary += `<p>⏱️ 平均时长：${avgDuration}分钟（${avgDuration > 20 ? '属于沉浸式体验' : avgDuration < 5 ? '效率派选手' : '中规中矩'}）</p>`;
+            summary += `<p>👀 常用眼神：${commonEye || '暂无数据'}</p>`;
+            
+            // 个性化建议
+            let recommendation = '';
+            if (avgDuration > 20) {
+                recommendation = "💡 建议：减少刷手机时间，腿麻风险较高";
+            } else if (shapes.includes('稀里哗啦，来不及告别')) {
+                recommendation = "💡 建议：注意饮食卫生，少吃可疑烧烤";
+            } else if (eyes.includes('眼神警惕（怕被敲门）')) {
+                recommendation = "💡 建议：安装厕所门锁，提升安全感";
+            } else {
+                recommendation = "💡 建议：保持当前状态，你做得很好！";
+            }
+            
+            aiSummaryContent.innerHTML = summary + `<div class="recommendation">${recommendation}</div>`;
+            aiSummary.style.display = 'block';
+        }
+        
+        // 提交表单
+        function handleSubmit() {
+            // 验证必填项
+            if (!currentStatus) {
+                showNotification('请告诉我你拉没拉！');
+                return;
+            }
+            
+            if (currentStatus === '拉过了' && !currentShape) {
+                showNotification('别害羞，选个屎形吧！');
+                return;
+            }
+            
+            // 收集数据
+            const record = {
+                id: Date.now(),
+                date: new Date().toLocaleDateString('zh-CN'),
+                status: currentStatus,
+                startTime: startTime.value || '未知时间',
+                duration: duration.value || '未知',
+                shape: currentShape || '无',
+                eye: currentEye || '无',
+                notes: notes.value || '无',
+                timestamp: new Date().toISOString()
+            };
+            
+            // 保存到localStorage
+            records.push(record);
+            localStorage.setItem('laleRecords', JSON.stringify(records));
+            
+            // 显示成功通知
+            showNotification('记录成功！又是一条好汉！');
+            
+            // 生成AI总结（如果有3条以上记录）
+            if (records.length >= 3) {
+                generateAISummary();
+            }
+            
+            // 重置表单（保留状态选项）
+            resetForm();
+        }
+        
+        // 重置表单
+        function resetForm() {
+            // 重置选项
+            document.querySelectorAll('.option-card').forEach(opt => opt.classList.remove('selected'));
+            currentStatus = '';
+            currentShape = '';
+            currentEye = '';
+            
+            // 重置输入框
+            duration.value = '';
+            notes.value = '';
+            
+            // 隐藏AI总结
+            aiSummary.style.display = 'none';
+        }
+        
+        // 渲染历史记录
+        function renderHistory() {
+            if (records.length === 0) {
+                historyList.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            // 按时间倒序排列
+            const sortedRecords = [...records].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            historyList.innerHTML = sortedRecords.map(record => `
+                <div class="history-item">
+                    <div class="history-header">
+                        <span>${record.date}</span>
+                        <span>${record.status}</span>
+                    </div>
+                    <div class="history-details">
+                        <div class="history-detail">
+                            <i class="fas fa-clock"></i> ${record.startTime}
+                        </div>
+                        <div class="history-detail">
+                            <i class="fas fa-hourglass-half"></i> ${record.duration}分钟
+                        </div>
+                        <div class="history-detail">
+                            <i class="fas fa-toilet"></i> ${record.shape}
+                        </div>
+                        <div class="history-detail">
+                            <i class="fas fa-eye"></i> ${record.eye}
+                        </div>
+                    </div>
+                    ${record.notes !== '无' ? `<div style="margin-top:10px; font-style:italic; color:#8B4513;">"${record.notes}"</div>` : ''}
+                </div>
+            `).join('');
+        }
+        
+        // 清空历史记录
+        function clearHistory() {
+            if (records.length === 0) return;
+            
+            if (confirm('确定要清空所有拉屎回忆吗？此操作不可恢复！')) {
+                records = [];
+                localStorage.removeItem('laleRecords');
+                renderHistory();
+                showNotification('回忆已清空，重新开始吧！');
+            }
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
 </html>
