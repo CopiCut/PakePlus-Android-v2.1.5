@@ -1,11 +1,97 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>PakePlus</title>
-    </head>
-    <body>
-        PakePlus
-    </body>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <!-- 核心配置：禁止缩放、适配2608*1200分辨率、强制横屏视口 -->
+    <meta name="viewport" content="width=2608, height=1200, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="screen-orientation" content="landscape">
+    <meta name="x5-orientation" content="landscape">
+    <!-- 适配微信/QQ等内置浏览器横屏 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>场内基金排行榜-横屏专用</title>
+    <style>
+        /* 全局重置：消除边距，适配旋转布局 */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            width: 100vh; /* 旋转后宽高互换，适配竖屏物理尺寸转横屏逻辑尺寸 */
+            height: 100vw;
+            overflow: hidden;
+            /* 适配手机底部安全区，防止遮挡翻页/表格 */
+            padding-bottom: constant(safe-area-inset-bottom);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        /* 核心容器：90度旋转（关键）+ 占满屏幕 + 仅裁剪顶部 */
+        .fund-table-container {
+            width: 100vh;
+            height: 100vw;
+            overflow: hidden;
+            position: relative;
+            /* 顺时针旋转90度，贴合手机横屏握持视角 */
+            transform: rotate(90deg);
+            /* 旋转后位置校准，避免偏移 */
+            transform-origin: center center;
+            -webkit-transform-origin: center center;
+        }
+        /* iframe核心配置：适配2608*1200分辨率 + 完整滚动 + 精准裁剪 */
+        #fund-iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            position: absolute;
+            top: -240px; /* 仅裁剪顶部无关元素，表头/翻页完整 */
+            left: 0;
+            overflow: auto;
+            /* 优化滚动条：窄条不遮挡，适配旋转后布局 */
+            scrollbar-width: thin;
+            scrollbar-color: #ccc transparent;
+            /* 手机端触控弹性滚动，适配2608*1200屏幕 */
+            -webkit-overflow-scrolling: touch;
+        }
+        /* 电脑端/手机端滚动条统一优化 */
+        #fund-iframe::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        #fund-iframe::-webkit-scrollbar-thumb {
+            background-color: #ccc;
+            border-radius: 2px;
+        }
+        #fund-iframe::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        /* 强制隐藏竖屏样式，仅允许横屏 */
+        @media screen and (orientation: portrait) {
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: #f5f5f5;
+            }
+            .fund-table-container {
+                display: none;
+            }
+            /* 竖屏时显示提示文字 */
+            body::after {
+                content: "请横屏使用本页面";
+                font-size: 24px;
+                color: #666;
+                font-weight: 600;
+                text-align: center;
+                padding: 0 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="fund-table-container">
+        <iframe 
+            id="fund-iframe"
+            src="https://fund.eastmoney.com/data/fbsfundranking.html#tct;c0;r;szzf;ddesc;pn10000;"
+            frameborder="0"
+            scrolling="yes"
+            allow="touch-events; pan-x; pan-y"
+        ></iframe>
+    </div>
+</body>
 </html>
